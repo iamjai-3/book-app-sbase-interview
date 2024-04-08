@@ -3,10 +3,29 @@ import xlsx from "xlsx";
 import { db } from "../drizzle/db";
 import { Book } from "../drizzle/schema";
 import { generateWeeklyReport } from "../library/GenerateReport";
+import { ilike, like } from "drizzle-orm";
 
 const createBook = (req: Request, res: Response, next: NextFunction) => {};
 
-const readBook = (req: Request, res: Response, next: NextFunction) => {};
+const fetchBookByName = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let { letters } = req.params;
+    console.log("letters", letters);
+
+    const searchedBooks = await db
+      .select()
+      .from(Book)
+      .where(ilike(Book.title, `%${letters}%`));
+
+    res.status(200).json(searchedBooks);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
+};
 
 const generateReport = async (
   req: Request,
@@ -18,6 +37,19 @@ const generateReport = async (
     deletedRecords: data?.deletedRecords,
     newRecords: data?.newlyInsertedRecords,
   });
+};
+
+const fetchAllBooks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const allBooks = await db.select().from(Book);
+    res.status(200).json(allBooks);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
 };
 
 const updateBook = (req: Request, res: Response, next: NextFunction) => {};
@@ -61,7 +93,8 @@ const uploadData = async (req: Request, res: Response, next: NextFunction) => {
 export default {
   createBook,
   generateReport,
-  readBook,
+  fetchAllBooks,
+  fetchBookByName,
   updateBook,
   deleteBook,
   uploadData,

@@ -26,8 +26,8 @@ router.post("/upload", upload.single("file"), BookController.uploadData);
 router.get("/generate-report", BookController.generateReport);
 
 router.post("/create", BookController.createBook);
-router.get("/get/:bookId", BookController.readBook);
-// router.get("/get", BookController.readAll);
+router.get("/get/:letters", BookController.fetchBookByName);
+router.get("/get", BookController.fetchAllBooks);
 router.patch("/update/:bookId", BookController.updateBook);
 router.delete("/delete/:bookId", BookController.deleteBook);
 
