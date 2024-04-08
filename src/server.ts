@@ -64,11 +64,10 @@ const StartServer = () => {
   });
 
   /** Cron Jon to Generate Weekly Report */
-  const cronScheduleForEveryWeek = "0 12 * * 0"; // 12PM on every sunday
-  const cronScheduleForEvery5Sec = "*/5 * * * * *";
+  const cronSchedule = config.cronSchedule;
 
   cron.schedule(
-    cronScheduleForEvery5Sec,
+    cronSchedule,
     async () => {
       Logging.info(`<-- Weekly Report Generation Cron Job Started -->`);
       try {
@@ -77,9 +76,10 @@ const StartServer = () => {
       } catch (error) {
         console.error("Error generating weekly report:", error);
       }
+      Logging.info(`<-- Weekly Report Generation Cron Job Completed -->`);
     },
     {
-      timezone: "Asia/Kolkata", // Set your desired timezone
+      timezone: "Asia/Kolkata",
     }
   );
 
