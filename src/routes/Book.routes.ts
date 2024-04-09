@@ -7,7 +7,6 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = "uploads/";
 
-    // Create the 'uploads/' directory if it doesn't exist
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir);
     }
@@ -28,7 +27,10 @@ router.get("/generate-report", BookController.generateReport);
 router.post("/create", BookController.createBook);
 router.get("/get/:letters", BookController.fetchBookByName);
 router.get("/get", BookController.fetchAllBooks);
-router.patch("/update/:bookId", BookController.updateBook);
-router.delete("/delete/:bookId", BookController.deleteBook);
+router.get("/removed-books", BookController.removedBooks);
+router.get("/book/:id", BookController.fetchBook);
+
+router.patch("/add/:bookId", BookController.addBook);
+router.delete("/remove/:bookId", BookController.removeBook);
 
 export = router;

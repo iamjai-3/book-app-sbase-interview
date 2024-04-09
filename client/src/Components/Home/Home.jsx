@@ -4,22 +4,15 @@ import Loading from "../Loading/Loading";
 import Sidebar from "../Sidebar/Sidebar";
 import BookItem from "./BookItem";
 import { motion } from "framer-motion";
-import Joi from "joi";
 
 export default function Home() {
   const [allBooks, setAllBooks] = useState([]);
   const [bookName, setBookName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(null);
 
   async function getDataFromURL() {
     setLoading(true);
-    let { data } = await axios.get("http://localhost:5000/books/get", {
-      headers: {
-        token: localStorage.getItem("userToken"),
-      },
-    });
-    console.log("data", data);
+    let { data } = await axios.get("http://localhost:5000/books/get");
     setAllBooks(data);
     setLoading(false);
   }
@@ -27,35 +20,10 @@ export default function Home() {
   async function searchBooksByName() {
     setLoading(true);
     let { data } = await axios.get(
-      `http://localhost:5000/books/get/${bookName}`,
-      {
-        headers: {
-          token: localStorage.getItem("userToken"),
-        },
-      }
+      `http://localhost:5000/books/get/${bookName}`
     );
-    console.log("data", data);
     setAllBooks(data);
     setLoading(false);
-  }
-
-  function validateSearchData() {
-    let schema = Joi.object({
-      name: Joi.string().required(),
-    });
-
-    return schema.validate({ name: bookName }, { abortEarly: false });
-  }
-
-  function validateAndSearch(e) {
-    //setLoading(true);
-    e.preventDefault();
-    let validation = validateSearchData();
-    if (validation.error) {
-      console.log(validation.error);
-    } else {
-      searchBooksByName();
-    }
   }
 
   useEffect(() => {
@@ -90,7 +58,7 @@ export default function Home() {
                 id="name"
               />
               <button
-                onClick={validateAndSearch}
+                onClick={searchBooksByName}
                 className="btn btn-danger text-white d-inline-block ms-3 h-50"
               >
                 search
@@ -101,7 +69,7 @@ export default function Home() {
                 allBooks.map((book, index) => (
                   <BookItem
                     key={index}
-                    _id={book._id}
+                    _id={book.id}
                     name={book.title}
                     category={book.category}
                     publisher={book.publisher}

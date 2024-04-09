@@ -3,7 +3,6 @@ import http from "http";
 import { config } from "./config/config";
 import Logging from "./library/Logging";
 import bookRoutes from "./routes/Book.routes";
-import userRoutes from "./routes/User.routes";
 import * as cron from "node-cron";
 import { generateWeeklyReport } from "./library/GenerateReport";
 
@@ -48,7 +47,6 @@ const StartServer = () => {
 
   /** Routes */
   router.use("/books", bookRoutes);
-  router.use("/users", userRoutes);
 
   /** Health check */
   router.get("/ping", (req: Request, res: Response, next: NextFunction) =>

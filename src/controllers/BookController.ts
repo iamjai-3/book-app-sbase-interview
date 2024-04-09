@@ -3,7 +3,8 @@ import xlsx from "xlsx";
 import { db } from "../drizzle/db";
 import { Book } from "../drizzle/schema";
 import { generateWeeklyReport } from "../library/GenerateReport";
-import { ilike, like } from "drizzle-orm";
+import { and, eq, gte, ilike } from "drizzle-orm";
+import { faker } from "@faker-js/faker";
 
 const createBook = (req: Request, res: Response, next: NextFunction) => {};
 
@@ -14,14 +15,22 @@ const fetchBookByName = async (
 ) => {
   try {
     let { letters } = req.params;
-    console.log("letters", letters);
-
     const searchedBooks = await db
       .select()
       .from(Book)
       .where(ilike(Book.title, `%${letters}%`));
 
     res.status(200).json(searchedBooks);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
+};
+
+const fetchBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let { id } = req.params;
+    const book = await db.select().from(Book).where(eq(Book.id, id));
+    res.status(200).json(book);
   } catch (error) {
     res.status(500).json({ message: JSON.stringify(error) });
   }
@@ -45,8 +54,28 @@ const fetchAllBooks = async (
   next: NextFunction
 ) => {
   try {
-    const allBooks = await db.select().from(Book);
+    const allBooks = await db
+      .select()
+      .from(Book)
+      .where(eq(Book.isDeleted, false));
     res.status(200).json(allBooks);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
+};
+
+const removedBooks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const deletedRecords = await db
+      .select()
+      .from(Book)
+      .where(eq(Book.isDeleted, true));
+
+    res.status(200).json(deletedRecords);
   } catch (error) {
     res.status(500).json({ message: JSON.stringify(error) });
   }
@@ -54,7 +83,37 @@ const fetchAllBooks = async (
 
 const updateBook = (req: Request, res: Response, next: NextFunction) => {};
 
-const deleteBook = (req: Request, res: Response, next: NextFunction) => {};
+const removeBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { bookId } = req.params;
+    const [rmvBook] = await db
+      .update(Book)
+      .set({
+        isDeleted: true,
+      })
+      .where(eq(Book.id, bookId))
+      .returning();
+    res.status(200).json(rmvBook);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
+};
+
+const addBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { bookId } = req.params;
+    const [rmvBook] = await db
+      .update(Book)
+      .set({
+        isDeleted: false,
+      })
+      .where(eq(Book.id, bookId))
+      .returning();
+    res.status(200).json(rmvBook);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
+};
 
 const uploadData = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -74,7 +133,11 @@ const uploadData = async (req: Request, res: Response, next: NextFunction) => {
         const lowercaseKey = key.toLowerCase();
         obj[lowercaseKey] = row[key];
       }
-      return obj;
+      const randomPic = faker.image.urlPicsumPhotos({
+        height: 800,
+        width: 600,
+      });
+      return { ...obj, bookPhoto: randomPic };
     });
 
     const insertedData = await db
@@ -95,7 +158,10 @@ export default {
   generateReport,
   fetchAllBooks,
   fetchBookByName,
+  removedBooks,
+  addBook,
+  fetchBook,
   updateBook,
-  deleteBook,
+  removeBook,
   uploadData,
 };

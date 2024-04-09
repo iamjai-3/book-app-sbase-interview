@@ -23,6 +23,7 @@ export const Book = pgTable("book", {
   title: varchar("title").notNull(),
   genre: varchar("genre").notNull(),
   publisher: varchar("publisher").notNull(),
+  bookPhoto: varchar("book_photo"),
   isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
