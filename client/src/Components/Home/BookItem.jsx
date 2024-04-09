@@ -13,7 +13,7 @@ export default function BookItem(props) {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.2 }}
             className="book-item p-3 text-center bg-light bg-opacity-25 rounded-2 shadow-sm me-4 me-md-0 mouse-pointer position-relative"
           >
             {isIssued ? (

@@ -20,9 +20,9 @@ export default function Sidebar() {
             <li className="p-3 pe-lg-5 sidebar-element">
               <Link to="/addBook" className="nav-link px-0 px-lg-2">
                 {" "}
-                <i className="bi bi-plus" />
+                <i className="bi bi-upload" />
                 <span className="px-lg-2 ms-1 d-none d-lg-inline">
-                  Create
+                  Upload
                 </span>{" "}
               </Link>
             </li>
@@ -31,7 +31,7 @@ export default function Sidebar() {
                 {" "}
                 <i className="bi bi-book"></i>
                 <span className="px-lg-2 ms-1 d-none d-lg-inline">
-                  Agenda
+                  Book Shelf
                 </span>{" "}
               </Link>
             </li>

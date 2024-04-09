@@ -38,7 +38,7 @@ export default function NewBooks() {
                 transition={{ delay: 0.5, duration: 1 }}
                 className="fw-bold p-3"
               >
-                All Books In Store
+                Books In Store
               </motion.h2>
             </div>
 

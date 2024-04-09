@@ -44,7 +44,7 @@ export default function Home() {
             <motion.span
               initial={{ y: -150 }}
               animate={{ y: 0 }}
-              transition={{ delay: 0.8, duration: 1 }}
+              transition={{ delay: 0.2, duration: 1 }}
               className="mx-auto pe-5 pe-lg-0 p d-flex align-items-center justify-content-center"
             >
               <input

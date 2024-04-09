@@ -6,7 +6,16 @@ import { generateWeeklyReport } from "../library/GenerateReport";
 import { and, eq, gte, ilike } from "drizzle-orm";
 import { faker } from "@faker-js/faker";
 
-const createBook = (req: Request, res: Response, next: NextFunction) => {};
+const createBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const book = req.body;
+    const insertedBook = await db.insert(Book).values(book).returning();
+    console.log("insertedBook", insertedBook);
+    res.status(200).json(insertedBook);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
+};
 
 const fetchBookByName = async (
   req: Request,
@@ -18,7 +27,7 @@ const fetchBookByName = async (
     const searchedBooks = await db
       .select()
       .from(Book)
-      .where(ilike(Book.title, `%${letters}%`));
+      .where(and(ilike(Book.title, `%${letters}%`), eq(Book.isDeleted, false)));
 
     res.status(200).json(searchedBooks);
   } catch (error) {
@@ -80,8 +89,6 @@ const removedBooks = async (
     res.status(500).json({ message: JSON.stringify(error) });
   }
 };
-
-const updateBook = (req: Request, res: Response, next: NextFunction) => {};
 
 const removeBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -161,7 +168,6 @@ export default {
   removedBooks,
   addBook,
   fetchBook,
-  updateBook,
   removeBook,
   uploadData,
 };
